@@ -1,0 +1,1 @@
+https://github.com/zhisheng17/flink-learning/tree/master/flink-learning-connectors
