@@ -11,7 +11,7 @@
     <sql id="Base_Column_List">
         user_id,user_name,age,birthday,create_date
     </sql>
-    <insert id="saveData" parameterType="com.wxw.domain.UserInfo" >
+    <insert id="saveData" parameterType="com.wxw.domain.UserInfo" useGeneratedKeys="false" >
         INSERT INTO user_info
             (user_id,user_name,age,birthday,create_date)
         VALUES
