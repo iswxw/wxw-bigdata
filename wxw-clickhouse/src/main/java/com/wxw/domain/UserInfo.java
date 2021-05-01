@@ -3,6 +3,7 @@ package com.wxw.domain;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author weixiaowei
@@ -12,10 +13,9 @@ import java.io.Serializable;
 @Data
 public class UserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int id;
+    private Integer userId;
     private String userName;
-    private String passWord;
-    private String phone;
-    private String email;
-    private String createDay;
+    private Integer age;
+    private Date birthday;
+    private Date createDate;
 }

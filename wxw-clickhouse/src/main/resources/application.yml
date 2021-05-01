@@ -5,9 +5,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     click:
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-      url: jdbc:clickhouse://wxw.plus:9000/default
+      url: jdbc:clickhouse://wxw.plus:8123/wxw
       username: default
-      password: 123456
+      password:
       initialSize: 10
       maxActive: 100
       minIdle: 10

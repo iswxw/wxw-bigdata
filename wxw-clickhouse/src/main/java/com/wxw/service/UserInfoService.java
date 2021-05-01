@@ -1,8 +1,6 @@
 package com.wxw.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.wxw.domain.UserInfo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,7 +9,7 @@ import java.util.List;
  * @desc:
  * @date: 2021/4/27
  */
-public interface UserInfoService extends IService<UserInfo> {
+public interface UserInfoService{
 
     // 写入数据
     void saveData (UserInfo userInfo) ;

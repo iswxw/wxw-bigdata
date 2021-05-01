@@ -13,17 +13,26 @@ import java.util.List;
  * @desc:
  * @date: 2021/4/27
  */
-@Repository
+@Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
-
-    // 写入数据
+    /**
+     * 写入数据
+     * @param userInfo
+     */
     void saveData (UserInfo userInfo) ;
 
-    // ID 查询
+    /**
+     * ID 查询
+     * @param id
+     * @return
+     */
     UserInfo selectById (@Param("id") Integer id) ;
 
-    // 查询全部
+    /**
+     * 查询全部
+     * @return
+     */
     List<UserInfo> selectList() ;
 
 }
