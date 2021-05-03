@@ -21,6 +21,8 @@
         <module>wxw-flink-hdfs</module>
         <module>wxw-flink-pulsar</module>
         <module>wxw-flink-elasticsearch</module>
+        <module>wxw-flink-java</module>
+        <module>wxw-flink-kafka</module>
     </modules>
 
     <properties>
