@@ -1,4 +1,4 @@
-package com.wxw.study;
+package com.wxw.study.source;
 
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -9,10 +9,10 @@ import java.util.Properties;
 
 /**
  * @author weixiaowei
- * @desc:
+ * @desc: Sink数据到控制台
  * @date: 2021/5/3
  */
-public class StreamJobWithKafka {
+public class WriteStreamFromKafka {
     public static void main(String[] args) throws Exception {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -28,6 +28,7 @@ public class StreamJobWithKafka {
                 new SimpleStringSchema(),  // String 序列化
                 props)).setParallelism(1);
         dataStreamSource.print(); //把从 kafka 读取到的数据打印在控制台
+
         env.execute("Flink add data source");
     }
 }

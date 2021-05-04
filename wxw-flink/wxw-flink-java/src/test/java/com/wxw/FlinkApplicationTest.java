@@ -28,4 +28,12 @@ public class FlinkApplicationTest {
         // 数据源
         env1.addSource(null);
     }
+
+    /**
+     * DataSink 数据存储 Collector
+     */
+    @Test
+    public void test_sink() {
+       // PrintSinkFunction
+    }
 }

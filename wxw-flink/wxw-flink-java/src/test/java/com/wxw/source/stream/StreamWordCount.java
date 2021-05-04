@@ -1,9 +1,7 @@
-package com.wxw.stream;
+package com.wxw.source.stream;
 
-import com.wxw.batch.WordCount;
+import com.wxw.source.batch.WordCount;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
