@@ -1,4 +1,4 @@
-package com.wxw.source.common;
+package com.wxw.common;
 
 import org.apache.flink.api.java.utils.ParameterTool;
 
