@@ -95,7 +95,9 @@ public class TransformationTest {
             }
         });
         keyBy.print();
+
     }
+
 
 
 }
