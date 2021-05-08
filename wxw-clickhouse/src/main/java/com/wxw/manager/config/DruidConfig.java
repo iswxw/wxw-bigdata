@@ -24,8 +24,10 @@ public class DruidConfig {
         datasource.setUrl(jdbcProperties.getUrl());
         datasource.setDriverClassName(jdbcProperties.getDriverClassName());
         datasource.setInitialSize(jdbcProperties.getInitialSize());
+        datasource.setValidationQuery(jdbcProperties.getValidationQuery());
         datasource.setMinIdle(jdbcProperties.getMinIdle());
         datasource.setMaxActive(jdbcProperties.getMaxActive());
+        datasource.setTestWhileIdle(jdbcProperties.getTestWhileIdle());
         datasource.setMaxWait(jdbcProperties.getMaxWait());
         datasource.setUsername(jdbcProperties.getUserName());
         datasource.setPassword(jdbcProperties.getPassword());

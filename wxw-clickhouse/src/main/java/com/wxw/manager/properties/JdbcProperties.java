@@ -16,12 +16,14 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "spring.datasource.click")
 public class JdbcProperties {
 
-    private String driverClassName ;
-    private String url ;
+    private String driverClassName;
+    private String url;
     private String userName;
     private String password;
-    private Integer initialSize ;
-    private Integer maxActive ;
-    private Integer minIdle ;
-    private Integer maxWait ;
+    private String validationQuery;
+    private Integer initialSize;
+    private Boolean testWhileIdle;
+    private Integer maxActive;
+    private Integer minIdle;
+    private Integer maxWait;
 }
