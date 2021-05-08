@@ -4,7 +4,7 @@
 *.log
 # BlueJ files
 *.ctxt
-
+*.iml
 ## 文件相关
 .mtj.tmp/
 .idea

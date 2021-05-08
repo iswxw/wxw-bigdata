@@ -1,6 +1,5 @@
 package com.wxw.study.source;
 
-import com.wxw.domain.SensorReading;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 

@@ -1,15 +1,11 @@
 package com.wxw.study.source;
 
-import com.wxw.domain.SensorReading;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 
 /**

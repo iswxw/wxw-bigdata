@@ -31,5 +31,11 @@
     </properties>
 
     <dependencies>
+        <!-- 通用模块-->
+        <dependency>
+            <groupId>com.wxw</groupId>
+            <artifactId>wxw-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

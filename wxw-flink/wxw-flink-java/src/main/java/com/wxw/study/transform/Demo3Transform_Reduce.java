@@ -1,7 +1,5 @@
 package com.wxw.study.transform;
 
-import com.wxw.domain.SensorReading;
-import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
