@@ -1,5 +1,6 @@
 package com.wxw.study.transform;
 
+import com.wxw.domain.SensorReading;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;

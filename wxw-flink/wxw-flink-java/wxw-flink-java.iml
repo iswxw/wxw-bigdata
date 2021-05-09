@@ -91,8 +91,6 @@
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-jul:2.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.30" level="project" />
-    <orderEntry type="module" module-name="wxw-common" />
-    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.76" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.3.3.RELEASE" level="project" />

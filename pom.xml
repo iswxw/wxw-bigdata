@@ -12,7 +12,6 @@
         <module>wxw-hbase</module>
         <module>wxw-clickhouse</module>
         <module>wxw-flink</module>
-        <module>wxw-common</module>
     </modules>
 
     <properties>
