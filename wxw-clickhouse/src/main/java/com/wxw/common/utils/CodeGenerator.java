@@ -1,4 +1,4 @@
-package com.wxw.manager.utils;
+package com.wxw.common.utils;
 
 
 import com.baomidou.mybatisplus.annotation.DbType;

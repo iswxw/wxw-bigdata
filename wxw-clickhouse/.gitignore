@@ -10,6 +10,7 @@
 .idea
 logs
 target/
+delete/*
 # Package Files #
 *.jar
 *.war

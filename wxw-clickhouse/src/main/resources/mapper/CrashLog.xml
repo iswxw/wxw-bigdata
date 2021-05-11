@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wxw.dao.CrashLogMapper">
+    <resultMap id="BaseResultMap" type="com.wxw.domain.CrashLog">
+        <id column="userId" jdbcType="VARCHAR" property="userId" />
+        <result column="appKey" jdbcType="VARCHAR" property="appKey" />
+        <result column="reportId" jdbcType="INTEGER" property="reportId" />
+        <result column="apmVersion" jdbcType="DATE" property="apmVersion" />
+        <result column="processName" jdbcType="DATE" property="processName" />
+        <result column="reportType" jdbcType="DATE" property="reportType" />
+        <result column="crashTimeStamp" jdbcType="DATE" property="crashTimeStamp" />
+        <result column="systemName" jdbcType="DATE" property="systemName" />
+        <result column="systemVersion" jdbcType="DATE" property="systemVersion" />
+        <result column="osVersion" jdbcType="DATE" property="osVersion" />
+        <result column="brand" jdbcType="DATE" property="brand" />
+        <result column="isRooted" jdbcType="DATE" property="isRooted" />
+        <result column="executablePath" jdbcType="DATE" property="executablePath" />
+        <result column="executableName" jdbcType="DATE" property="executableName" />
+        <result column="bundleId" jdbcType="DATE" property="bundleId" />
+        <result column="bundleVersion" jdbcType="DATE" property="bundleVersion" />
+        <result column="appUuid" jdbcType="DATE" property="appUuid" />
+        <result column="cpuArch" jdbcType="DATE" property="cpuArch" />
+        <result column="deviceId" jdbcType="DATE" property="deviceId" />
+        <result column="appLaunchTime" jdbcType="DATE" property="appLaunchTime" />
+        <result column="buildType" jdbcType="DATE" property="buildType" />
+        <result column="storage" jdbcType="DATE" property="storage" />
+        <result column="memorySize" jdbcType="DATE" property="memorySize" />
+        <result column="memoryUsed" jdbcType="DATE" property="memoryUsed" />
+        <result column="memoryFree" jdbcType="DATE" property="memoryFree" />
+        <result column="crashError" jdbcType="DATE" property="crashError" />
+        <result column="crashName" jdbcType="DATE" property="crashName" />
+        <result column="moduleName" jdbcType="DATE" property="moduleName" />
+        <result column="crashType" jdbcType="DATE" property="crashType" />
+        <result column="crashMessage" jdbcType="DATE" property="crashMessage" />
+        <result column="createTime" jdbcType="DATE" property="createTime" />
+        <result column="updateTime" jdbcType="DATE" property="updateTime" />
+        <result column="threads" jdbcType="DATE" property="threads" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        userId,appKey,reportId,apmVersion,processName,reportType,crashTimeStamp,systemName,systemVersion
+        osVersion,brand,isRooted,executablePath,executableName,bundleId,bundleVersion,appUuid,cpuArch,
+        deviceId,appLaunchTime,buildType,storage,memorySize,memoryUsed,memoryFree,crashError,crashName,
+        moduleName,crashType,crashMessage,createTime,updateTime,threads
+    </sql>
+</mapper>
