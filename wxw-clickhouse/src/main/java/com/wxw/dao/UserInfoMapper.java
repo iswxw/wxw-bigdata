@@ -22,10 +22,10 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     /**
      * ID 查询
-     * @param id
+     * @param userId
      * @return
      */
-    UserInfo selectById (@Param("id") Integer id) ;
+    UserInfo selectById (@Param("userId") Integer userId) ;
 
     /**
      * 查询全部

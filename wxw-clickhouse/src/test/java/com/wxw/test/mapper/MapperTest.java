@@ -22,6 +22,9 @@ public class MapperTest extends ClickHouseTest {
     @Resource
     private UserInfoMapper userInfoMapper;
 
+    /**
+     * clickhouse添加操作
+     */
     @Test
     public void test_save() {
         UserInfo userInfo = new UserInfo();
@@ -33,9 +36,11 @@ public class MapperTest extends ClickHouseTest {
         userInfoMapper.saveData(userInfo);
     }
 
+    /**
+     * clickhouse 查询操作
+     */
     @Test
     public void test_queryById() {
         UserInfo userInfo = userInfoMapper.selectById(100);
-        log.info("userInfo = {}",userInfo);
     }
 }
