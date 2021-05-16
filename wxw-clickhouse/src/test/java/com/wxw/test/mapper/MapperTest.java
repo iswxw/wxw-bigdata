@@ -5,11 +5,9 @@ import com.wxw.dao.UserInfoMapper;
 import com.wxw.domain.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author weixiaowei
@@ -43,4 +41,10 @@ public class MapperTest extends ClickHouseTest {
     public void test_queryById() {
         UserInfo userInfo = userInfoMapper.selectById(100);
     }
+
+    /**
+     *  分页查询
+     */
+
+
 }
