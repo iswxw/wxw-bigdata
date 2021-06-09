@@ -3,11 +3,10 @@ package com.wxw.test.comon;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wxw.ClickHouseTest;
-import com.wxw.common.utils.JsonHelper;
+import com.wxw.common.helper.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 

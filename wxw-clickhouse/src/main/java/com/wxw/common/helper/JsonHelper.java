@@ -1,4 +1,4 @@
-package com.wxw.common.utils;
+package com.wxw.common.helper;
 
 import java.io.File;
 import java.io.FileOutputStream;
