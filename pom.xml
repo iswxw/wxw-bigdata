@@ -12,6 +12,7 @@
         <module>wxw-hbase</module>
         <module>wxw-clickhouse</module>
         <module>wxw-flink</module>
+        <module>wxw-doris</module>
     </modules>
 
     <properties>
