@@ -20,8 +20,8 @@
         <!--hbase-->
         <dependency>
             <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-client</artifactId>
-            <version>2.4.2</version>
+            <artifactId>hbase-shaded-client</artifactId>
+            <version>2.4.4</version>
         </dependency>
     </dependencies>
 </project>

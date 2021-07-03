@@ -8,7 +8,7 @@
 
 ## Hbase 基础
 
-### 1. hbase快速入门
+###  hbase快速入门
 
 #### 1.1 环境准备
 
@@ -37,34 +37,38 @@
   # 大写p,主机随机分配端口与宿主机上的端口进行映射
   docker run -d --name wxw-hbase -P harisekhon/hbase:1.3
   
-  ## 或,小写P指定主机的端口 16010映射到宿主机上(容器)的开放端口 16010（[服务器(宿主机)开放端口]:[docker服务端口]）
+  ## 【常用】小写P指定主机的端口 16010映射到宿主机上(容器)的开放端口 16010（[服务器(宿主机)开放端口]:[docker服务端口]）
   docker run -d --name wxw-hbase -p 16010:16010 harisekhon/hbase:1.3
   
-  ## 推荐使用这种 -d 后台运行 -h 守护进程连接的host 
+  ## -d 后台运行 -h 守护进程连接的host  
   docker run -d -h wxw-hbase -p 2181:2181 -p 8085:8085 -p 9090:9090 -p 9095:9095 -p 16000:16000 -p 16010:16010 -p 16201:16201 -p 16301:16301 --name hbase harisekhon/hbase:1.3
   ```
 
   注意：hbase60010端口无法访问web页面，web端访问的接口变更为16010
 
-- 修改虚拟机 `etc/hosts`  文件
+  如果是选择 使用` -h ` 绑定host ip 则需要修改本地house
 
-  ```bash
-  # 查看docker IP
-  docker inspect [containerId]
-  
-  # 修改hosts
-  sudo vi /etc/hosts
-  
-  # 添加 docker IP  hostname
-  即：192.168.99.100  wxw-hbase
-  
-  -------
-  # 如果是wins系统,在本地的C:\Windows\System32\drivers\etc下修改hosts文件
-  # 添加 192.168.99.100  启动hbase时设置的主机名
-   即：192.168.99.100  wxw-hbase
-  ```
+  - 修改虚拟机 `etc/hosts`  文件
+
+    ```bash
+    # 查看docker IP
+    docker inspect [containerId]
+    
+    # 修改hosts
+    sudo vi /etc/hosts
+    
+    # 添加 docker IP  hostname
+    即：192.168.99.100  wxw-hbase
+    
+    -------
+    # 如果是wins系统,在本地的C:\Windows\System32\drivers\etc下修改hosts文件
+    # 添加 192.168.99.100  启动hbase时设置的主机名
+     即：192.168.99.100  wxw-hbase
+    ```
 
 - 浏览器查看Hbase的web界面：
+
+  - 修改host方式
 
   ```bash
   http://docker IP:宿主机上(容器)的开放端口 16010对应的指定主机的端口/master-status
@@ -74,11 +78,13 @@
 
   <img src="asserts/image-20210701132752708.png" alt="image-20210701132752708" style="zoom:50%;" />  
 
+  - 直接启动的方式访问：http://localhost:16010
+
 - 进入到hbase容器
 
   ```bash
   ## 进入hbase容器
-  docker exec -it  bash
+  docker exec -it hbase bash
   
   ## 然后执行连接到正在运行的 HBase 实例
   hbase shell 
@@ -274,17 +280,55 @@ hbase(main):011:0> drop 'test'
 
 要退出 HBase Shell 并与集群断开连接，请使用该`quit`命令。HBase 仍在后台运行
 
-#### 1.3 hbase伪分布式
+## 项目实践
 
-在完成[快速入门](http://hbase.apache.org/book.html#quickstart)独立模式后，您可以重新配置 HBase 以在伪分布式模式下运行。伪分布式模式意味着 HBase 仍然完全运行在单个主机上，但每个 HBase 守护进程（HMaster、HRegionServer 和 ZooKeeper）作为一个单独的进程运行：在独立模式下，所有守护进程都在一个 jvm 进程/实例中运行。默认情况下，除非您`hbase.rootdir`按照[快速入门中的说明](http://hbase.apache.org/book.html#quickstart)配置该属性 ，否则您的数据仍存储在*/tmp/ 中*。
+### springboot和hbase集成
+
+#### 1.maven 包依赖
+
+对于springboot操作hbase来说，我们可以选择官方的依赖包`hbase-client`，但这个包的google类库很多时候会和你的项目里的google类库冲突，最后就是你的程序缺少类而无法启动，解决这个问题的方法很多，而最彻底的就是自己封装一个shade包，或者使用人家封装好的shade包，shade就是maven里的一个重写包的插件，非常好用。
+
+- 之前的原始包
+
+  ```xml
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>2.4.4</version>
+    </dependency>
+  ```
+
+- 使用shade包
+
+  ```xml
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-shaded-client</artifactId>
+      <version>2.4.4</version>
+    </dependency>
+  ```
+
+不使用shade包，在put操作时会有错误，在scan类里的newLimit位置会出现错误
+
+```java
+/**
+ * 插入一条记录
+ */
+@Test
+public void putTest() {
+  String rowKey = UUID.randomUUID().toString();
+  hBaseDao.put(TABLE_NAME, rowKey, COLUMN_FAMILY, "name", Bytes.toBytes("testData"));
+}
+```
+
+**主要区别**
+
+- hbase-client 依赖了太多第三方库，如果你没有构建工具，很容易造成jar版本冲突。。
+- hbase-shaded-client 把所有的东西都打包了
 
 相关文章
 
-1. 快速入门单机hbase：http://hbase.apache.org/book.html
-
-
-
-
+1. [HBase~hbase-shaded-client解决包冲突问题](https://www.cnblogs.com/lori/p/13523063.html) 
 
 
 
