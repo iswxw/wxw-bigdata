@@ -280,11 +280,204 @@ hbase(main):011:0> drop 'test'
 
 要退出 HBase Shell 并与集群断开连接，请使用该`quit`命令。HBase 仍在后台运行
 
+#### 1.3 Java admin API 
+
+HBase 使用 Java 语言开发，因而 HBase 原生提供了一个 Java 语言客户端。这篇文章介绍 HBase Admin API，包括创建、启用、禁用、删除表等。如果项目使用 Maven 进行依赖管理，只需添加如下依赖即可以使用 Java 客户端访问 HBase 集群：
+
+> 如果要是遇到 Protobuf 等类冲突时，可以使用 HBase 提供的一个非常方便的 Jar：
+
+```xml
+<dependency>
+  <groupId>org.apache.hbase</groupId>
+  <artifactId>hbase-shaded-client</artifactId>
+  <version>2.1.6</version>
+</dependency>
+
+<dependency>
+  <groupId>org.apache.hbase</groupId>
+  <artifactId>hbase-shaded-server</artifactId>
+  <version>2.1.6</version>
+</dependency>
+```
+
+`hbase-shaded-client` 和 `hbase-shaded-server` 是在无法以其他方式解决依赖冲突的场景下使用的。在没有冲突的情况下，我们应首选：`hbase-client` 和 `hbase-server`。不要在协处理器内部使用 `hbase-shaded-server`或 `hbase-shaded-client`，因为这样可能会发生不好的事情。
+
+##### 1.3.1 连接HBase
+
+构建一个 Configuration 示例，该示例包含了一些客户端配置，最重要的必须配置是 HBase 集群的 ZooKeeper 地址与端口。ConnectionFactory 根据 Configuration 示例创建一个 Connection 对象，该 Connection 对象线程安全，封装了连接到 HBase 集群所需要的所有信息，如元数据缓存等。由于 Connection 开销比较大，类似于关系数据库的连接池，因此实际使用中会将该 Connection 缓存起来重复使用：
+
+```java
+public class HBaseConn {
+    private static final HBaseConn INSTANCE = new HBaseConn();
+    private static Configuration config;
+    private static Connection conn;
+
+    private HBaseConn() {
+        try {
+            if (config == null) {
+                config = HBaseConfiguration.create();
+                config.set("hbase.zookeeper.quorum", "127.0.0.1:2181");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取连接
+     * @return
+     */
+    private Connection getConnection() {
+        if (conn == null || conn.isClosed()) {
+            try {
+                conn = ConnectionFactory.createConnection(config);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return conn;
+    }
+
+    /**
+     * 关闭连接
+     */
+    private void closeConnection() {
+        if (conn != null) {
+            try {
+                conn.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 获取连接
+     * @return
+     */
+    public static Connection create() {
+        return INSTANCE.getConnection();
+    }
+
+    /**
+     * 关闭连接
+     */
+    public static void close() {
+        INSTANCE.closeConnection();
+    }
+}
+```
+
+相关文章
+
+1. [HBase Java Admin API](https://cloud.tencent.com/developer/article/1562121) 
+
+### hbase 基础
+
+#### 1. 命名空间管理
+
+> http://hbase.apache.org/book.html#_namespace
+
+```bash
+#Create a namespace
+create_namespace 'my_ns'
+
+#create my_table in my_ns namespace
+create 'my_ns:my_table', 'fam'
+
+#drop namespace
+drop_namespace 'my_ns'
+
+#alter namespace
+alter_namespace 'my_ns', {METHOD => 'set', 'PROPERTY_NAME' => 'PROPERTY_VALUE'}
+
+# 查看命名空间下的表 test是命名空间
+list_namespace_tables 'test'
+
+# 查看所有命名空间
+list_namespace
+```
+
+
+
+相关文章
+
+1. [HBase 命名空间 Namespace](https://cloud.tencent.com/developer/article/1544735) 
+
+#### 2. 建表
+
+> http://hbase.apache.org/book.html#_table 
+
+```bash
+Creates a table. Pass a table name, and a set of column family
+specifications (at least one), and, optionally, table configuration.
+Column specification can be a simple string (name), or a dictionary
+(dictionaries are described below in main help output), necessarily
+including NAME attribute.
+Examples:
+
+Create a table with namespace=ns1 and table qualifier=t1
+  hbase> create 'ns1:t1', {NAME => 'f1', VERSIONS => 5}
+
+Create a table with namespace=default and table qualifier=t1
+  hbase> create 't1', {NAME => 'f1'}, {NAME => 'f2'}, {NAME => 'f3'}
+  hbase> # The above in shorthand would be the following:
+  hbase> create 't1', 'f1', 'f2', 'f3'
+  hbase> create 't1', {NAME => 'f1', VERSIONS => 1, TTL => 2592000, BLOCKCACHE => true}
+  hbase> create 't1', {NAME => 'f1', CONFIGURATION => {'hbase.hstore.blockingStoreFiles' => '10'}}
+
+Table configuration options can be put at the end.
+Examples:
+
+  hbase> create 'ns1:t1', 'f1', SPLITS => ['10', '20', '30', '40']
+  hbase> create 't1', 'f1', SPLITS => ['10', '20', '30', '40']
+  hbase> create 't1', 'f1', SPLITS_FILE => 'splits.txt', OWNER => 'johndoe'
+  hbase> create 't1', {NAME => 'f1', VERSIONS => 5}, METADATA => { 'mykey' => 'myvalue' }
+  hbase> # Optionally pre-split the table into NUMREGIONS, using
+  hbase> # SPLITALGO ("HexStringSplit", "UniformSplit" or classname)
+  hbase> create 't1', 'f1', {NUMREGIONS => 15, SPLITALGO => 'HexStringSplit'}
+  hbase> create 't1', 'f1', {NUMREGIONS => 15, SPLITALGO => 'HexStringSplit', REGION_REPLICATION => 2, CONFIGURATION => {'hbase.hregion.scan.loadColumnFamiliesOnDemand' => 'true'}}
+  hbase> create 't1', {NAME => 'f1', DFS_REPLICATION => 1}
+
+You can also keep around a reference to the created table:
+
+  hbase> t1 = create 't1', 'f1'
+```
+
+#### 3. 查看
+
+- 查看已经存在的表集合
+
+  ```bash
+  list
+  ```
+
+- 查看表的详细信息
+
+  ```bash
+  describe
+  ```
+
+- 查看表中的数据
+
+  ```bash
+  # scan命令扫描表中的 所有数据
+  scan 'test'
+  
+  # 查看表中的  单行数据
+  get 'test', 'row1'
+  ```
+
+  
+
 ## 项目实践
 
 ### springboot和hbase集成
 
-#### 1.maven 包依赖
+#### 1. maven 包依赖
 
 对于springboot操作hbase来说，我们可以选择官方的依赖包`hbase-client`，但这个包的google类库很多时候会和你的项目里的google类库冲突，最后就是你的程序缺少类而无法启动，解决这个问题的方法很多，而最彻底的就是自己封装一个shade包，或者使用人家封装好的shade包，shade就是maven里的一个重写包的插件，非常好用。
 
@@ -330,9 +523,63 @@ public void putTest() {
 
 1. [HBase~hbase-shaded-client解决包冲突问题](https://www.cnblogs.com/lori/p/13523063.html) 
 
+#### 2. 建表
+
+> 概览
+
+```bash
+/**
+ * Hbase2.x Test环境访问
+ * <p>
+ * 在测试环境 test命名空间，存在一张 wxw-test 表，列簇为cf，表中有10条数据
+ * <p>
+ * create 'test:wxw-test', {NAME => 'cf', COMPRESSION => 'SNAPPY'}
+ * <p>
+ * |rowkey |name	     |gender |birthday
+ * |1      |周杰伦	     |男	    |1979-01-18
+ * |2      |林俊杰	     |男	    |1981-03-27
+ * |3      |范玮琪	     |女	    |1976-03-18
+ * |4      |Angelababy |女	    |1989-02-28
+ * |5      |佟丽娅	     |女	    |1983-08-08
+ * |6      |张敏	      |女	   |1968-02-07
+ * |7      |范冰冰	     |女	    |1981-09-16
+ * |8      |周杰	      |男	   |1970-08-05
+ * <p>
+ * put 'test:wxw-test', '1', 'cf:name', '周杰伦'
+ * put 'test:wxw-test', '1', 'cf:gender', '男'
+ * put 'test:bwxw-test', '1', 'cf:birthday', '1979-01-18'
+ */
+```
 
 
 
+- 创建命名空间
+
+  ```bash
+  #Create a namespace
+  create_namespace 'test'
+  ```
+
+- 在指定的命名空间建表
+
+  ```bash
+  # 表名：wxw-test 列族：cf
+  create 'test:wxw-test','cf'
+  
+  # 查看创建的表
+  list
+  
+  ## 输出结果
+  ----
+  hbase(main):007:0> list
+  TABLE
+  test:wxw-test
+  1 row(s) in 0.0260 seconds
+  
+  => ["test:wxw-test"]
+  ```
+
+- 
 
 
 

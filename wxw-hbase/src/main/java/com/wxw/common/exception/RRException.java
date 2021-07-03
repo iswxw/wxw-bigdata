@@ -1,4 +1,4 @@
-package com.wxw.common;
+package com.wxw.common.exception;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class SRException extends RuntimeException{
+public class RRException extends RuntimeException{
 
     private String message;
 
@@ -20,7 +20,7 @@ public class SRException extends RuntimeException{
      * 直接使用message中的消息
      * @param message
      */
-    public SRException(String message) {
+    public RRException(String message) {
         super(message);
         this.message = message;
     }
@@ -30,7 +30,7 @@ public class SRException extends RuntimeException{
      * @param message
      * @param e
      */
-    public SRException(String message, Throwable e) {
+    public RRException(String message, Throwable e) {
         super(message, e);
         this.message = message;
     }
@@ -40,7 +40,7 @@ public class SRException extends RuntimeException{
      * @param message
      * @param code
      */
-    public SRException(String message, int code) {
+    public RRException(String message, int code) {
         super(message);
         this.message = message;
         this.code = code;
@@ -52,7 +52,7 @@ public class SRException extends RuntimeException{
      * @param code
      * @param e
      */
-    public SRException(String message, int code, Throwable e) {
+    public RRException(String message, int code, Throwable e) {
         super(message, e);
         this.message = message;
         this.code = code;
