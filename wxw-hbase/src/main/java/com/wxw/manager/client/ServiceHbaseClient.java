@@ -5,6 +5,7 @@ import com.wxw.common.exception.ExceptionMessage;
 import com.wxw.common.exception.RRException;
 import com.wxw.common.helper.AssertHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.FilterList;
@@ -27,21 +28,17 @@ import java.util.List;
 @Component
 public class ServiceHbaseClient {
 
-    @Value("${hbase.zookeeper.quorum:localhost}")
+    @Value("${hbase.zookeeper.quorum:wxw-hbase}")
     private String quorum;
 
     @Value("${hbase.zookeeper.property.clientPort:2181}")
     private String port;
 
-    @Value("${hbase.zookeeper.path:/hbase}")
-    private String path;
 
     /**
      * 内部已实现线程安全的连接池
      */
-    private Connection hbaseConnection;
-
-    private Admin hBaseAdmin;
+    private static Connection hbaseConnection;
 
     /**
      * 判断表名是否存在
@@ -53,6 +50,7 @@ public class ServiceHbaseClient {
         AssertHelper.notNullValues(tableName);
         boolean tableExistsFlag = false;
         try {
+            Admin hBaseAdmin = hbaseConnection.getAdmin();
             tableExistsFlag = hBaseAdmin.tableExists(TableName.valueOf(tableName));
         } catch (IOException e) {
             log.error("IOException : {}", e.getMessage());
@@ -234,6 +232,7 @@ public class ServiceHbaseClient {
     public void create(String tableName, String... columnFamilies) throws IOException {
         AssertHelper.notNullValues(tableName,columnFamilies);
         TableName name = TableName.valueOf(tableName);
+        Admin hBaseAdmin = hbaseConnection.getAdmin();
         if (hBaseAdmin.tableExists(name)) {
             log.info("table {} already exists",tableName);
             return;
@@ -247,25 +246,30 @@ public class ServiceHbaseClient {
     }
 
 
-    /**
-     * 初始化
-     */
-    @PostConstruct
-    private void initHbase(){
-        try {
-            org.apache.hadoop.conf.Configuration config = HBaseConfiguration.create();
-            config.set(HConstants.ZOOKEEPER_QUORUM, quorum);
-            config.set(HConstants.ZOOKEEPER_ZNODE_PARENT,path);
-            config.set(HConstants.ZOOKEEPER_CLIENT_PORT,port);
 
-            // hbaseConnection = ConnectionFactory.createConnection(config);
-            // ### 需要创建绑定的访问用户
-            UserGroupInformation ugi = UserGroupInformation.createRemoteUser(Constant.HbaseTable.NAME_SPACE_TEST);
-            hbaseConnection = ugi.doAs((PrivilegedExceptionAction<Connection>) ()
-                    -> ConnectionFactory.createConnection(config));
-            hBaseAdmin = hbaseConnection.getAdmin();
-        } catch (IOException | InterruptedException e) {
-            throw new RRException("获取HBase连接失败",e);
+    public static Configuration conf = null;
+
+    /**
+     * 类级别的初始化，只是在类加载的时候做一次 配置zookeeper的端口2181
+     * 配置zookeeper的仲裁主机名centos，如果有多个机器，主机名间用冒号隔开 配置hbase master
+     */
+    static {
+        conf = HBaseConfiguration.create();
+        conf.set(HConstants.ZOOKEEPER_QUORUM, "wxw-hbase");
+        conf.set(HConstants.ZOOKEEPER_CLIENT_PORT,"2181");
+        conf.set("hbase.master", "hbase01:16000");
+        conf.setInt("hbase.regionserver.port", 16201);
+        conf.setInt("hbase.rpc.timeout",200);
+        conf.setInt("hbase.client.operation.timeout",300);
+        conf.setInt("hbase.client.scanner.timeout.period",200);
+        try {
+            hbaseConnection = ConnectionFactory.createConnection(conf);
+              // 需要创建绑定的访问用户
+//            UserGroupInformation ugi = UserGroupInformation.createRemoteUser(Constant.HbaseTable.NAME_SPACE_TEST);
+//            hbaseConnection = ugi.doAs((PrivilegedExceptionAction<Connection>) ()
+//                    -> ConnectionFactory.createConnection(config));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

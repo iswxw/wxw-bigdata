@@ -57,7 +57,7 @@
     # 修改hosts
     sudo vi /etc/hosts
     
-    # 添加 docker IP  hostname
+    # 添加 docker IP  hostname || 说明： 192.168.99.100 是虚拟机centos的IP
     即：192.168.99.100  wxw-hbase
     
     -------
@@ -306,71 +306,6 @@ HBase 使用 Java 语言开发，因而 HBase 原生提供了一个 Java 语言�
 
 构建一个 Configuration 示例，该示例包含了一些客户端配置，最重要的必须配置是 HBase 集群的 ZooKeeper 地址与端口。ConnectionFactory 根据 Configuration 示例创建一个 Connection 对象，该 Connection 对象线程安全，封装了连接到 HBase 集群所需要的所有信息，如元数据缓存等。由于 Connection 开销比较大，类似于关系数据库的连接池，因此实际使用中会将该 Connection 缓存起来重复使用：
 
-```java
-public class HBaseConn {
-    private static final HBaseConn INSTANCE = new HBaseConn();
-    private static Configuration config;
-    private static Connection conn;
-
-    private HBaseConn() {
-        try {
-            if (config == null) {
-                config = HBaseConfiguration.create();
-                config.set("hbase.zookeeper.quorum", "127.0.0.1:2181");
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取连接
-     * @return
-     */
-    private Connection getConnection() {
-        if (conn == null || conn.isClosed()) {
-            try {
-                conn = ConnectionFactory.createConnection(config);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return conn;
-    }
-
-    /**
-     * 关闭连接
-     */
-    private void closeConnection() {
-        if (conn != null) {
-            try {
-                conn.close();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 获取连接
-     * @return
-     */
-    public static Connection create() {
-        return INSTANCE.getConnection();
-    }
-
-    /**
-     * 关闭连接
-     */
-    public static void close() {
-        INSTANCE.closeConnection();
-    }
-}
-```
-
 相关文章
 
 1. [HBase Java Admin API](https://cloud.tencent.com/developer/article/1562121) 
@@ -383,16 +318,16 @@ public class HBaseConn {
 
 ```bash
 #Create a namespace
-create_namespace 'my_ns'
+create_namespace 'test'
 
 #create my_table in my_ns namespace
-create 'my_ns:my_table', 'fam'
+create 'test:docker-hbase-test', 'cf'
 
 #drop namespace
-drop_namespace 'my_ns'
+drop_namespace 'test'
 
 #alter namespace
-alter_namespace 'my_ns', {METHOD => 'set', 'PROPERTY_NAME' => 'PROPERTY_VALUE'}
+alter_namespace 'test', {METHOD => 'set', 'PROPERTY_NAME' => 'PROPERTY_VALUE'}
 
 # 查看命名空间下的表 test是命名空间
 list_namespace_tables 'test'
@@ -401,7 +336,7 @@ list_namespace_tables 'test'
 list_namespace
 ```
 
-
+<img src="asserts/image-20210704144548259.png" alt="image-20210704144548259" style="zoom:50%;" />  
 
 相关文章
 
@@ -471,11 +406,7 @@ You can also keep around a reference to the created table:
   get 'test', 'row1'
   ```
 
-  
-
-## 项目实践
-
-### springboot和hbase集成
+## springboot和hbase集成
 
 #### 1. maven 包依赖
 
@@ -522,6 +453,7 @@ public void putTest() {
 相关文章
 
 1. [HBase~hbase-shaded-client解决包冲突问题](https://www.cnblogs.com/lori/p/13523063.html) 
+2. [docker 搭建 hbase 单机环境](https://blog.csdn.net/xiaojin21cen/article/details/100925306) 
 
 #### 2. 建表
 
@@ -533,7 +465,7 @@ public void putTest() {
  * <p>
  * 在测试环境 test命名空间，存在一张 wxw-test 表，列簇为cf，表中有10条数据
  * <p>
- * create 'test:wxw-test', {NAME => 'cf', COMPRESSION => 'SNAPPY'}
+ * create 'test:docker-hbase-test','cf'
  * <p>
  * |rowkey |name	     |gender |birthday
  * |1      |周杰伦	     |男	    |1979-01-18
@@ -545,13 +477,11 @@ public void putTest() {
  * |7      |范冰冰	     |女	    |1981-09-16
  * |8      |周杰	      |男	   |1970-08-05
  * <p>
- * put 'test:wxw-test', '1', 'cf:name', '周杰伦'
- * put 'test:wxw-test', '1', 'cf:gender', '男'
- * put 'test:bwxw-test', '1', 'cf:birthday', '1979-01-18'
+ * put 'test:docker-hbase-test', '1', 'cf:name', 'Java半颗糖'
+ * put 'test:docker-hbase-test', '1', 'cf:gender', 'man'
+ * put 'test:docker-hbase-test', '1', 'cf:birthday', '1979-01-18'
  */
 ```
-
-
 
 - 创建命名空间
 
@@ -560,11 +490,11 @@ public void putTest() {
   create_namespace 'test'
   ```
 
-- 在指定的命名空间建表
+- 指定命名空间建表
 
   ```bash
   # 表名：wxw-test 列族：cf
-  create 'test:wxw-test','cf'
+  create 'test:docker-hbase-test','cf'
   
   # 查看创建的表
   list
@@ -573,13 +503,25 @@ public void putTest() {
   ----
   hbase(main):007:0> list
   TABLE
-  test:wxw-test
+  docker-hbase-test
   1 row(s) in 0.0260 seconds
   
-  => ["test:wxw-test"]
+  => ["docker-hbase-test"]
+  
+  ## 查看表元数据信息
+  desc 'docker-hbase-test'
+  
+  ## 查看表所有数据
+  scan 'docker-hbase-test'
   ```
 
-- 
+- 新增数据
+
+  ```bash
+  put 'test:docker-hbase-test', '1', 'cf:name', 'Java半颗糖'
+  ```
+
+  
 
 
 

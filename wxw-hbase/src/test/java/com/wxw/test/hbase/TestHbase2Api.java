@@ -2,18 +2,22 @@ package com.wxw.test.hbase;
 
 
 import com.wxw.HbaseTestBase;
+import com.wxw.common.Constant;
 import com.wxw.manager.client.ServiceHbaseClient;
-import javafx.util.Pair;
 import org.apache.hadoop.hbase.Cell;
+import javafx.util.Pair;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.CellUtil;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,15 +30,63 @@ import java.util.List;
 
 public class TestHbase2Api extends HbaseTestBase {
 
-
     @Resource
     private ServiceHbaseClient hbaseClient;
 
     // ### Hbase表名
-    public static String HBASE_TABLE_NAME = "test:bdg_hbase2_access_demo";
+    public static String HBASE_TABLE_NAME = "test:"+ Constant.HbaseTable.WXW_TEST;
+
+
+    public static Configuration conf=null;
+    public static Connection conn=null;
+
+    /**
+     * 类级别的初始化，只是在类加载的时候做一次 配置zookeeper的端口2181
+     * 配置zookeeper的仲裁主机名centos，如果有多个机器，主机名间用冒号隔开 配置hbase master
+     * 还有一种方式是new一个configuration对象，然后用addresource方法去添加xml配置文件 但是像这样显式的配置是会覆盖xml里的配置的
+     */
+    static {
+        conf = HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum", "wxw-hbase");
+        conf.set("hbase.zookeeper.property.clientPort","2181");
+        conf.set("hbase.master", "hbase01:16000");
+        conf.setInt("hbase.regionserver.port", 16201);
+        conf.setInt("hbase.rpc.timeout",200);
+        conf.setInt("hbase.client.operation.timeout",300);
+        conf.setInt("hbase.client.scanner.timeout.period",200);
+        try {
+            conn = ConnectionFactory.createConnection(conf);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 扫描全表
+     */
+    @Test
+    public  void scantable() throws IOException {
+        Scan scan = new Scan();
+        Table table = conn.getTable(TableName.valueOf(HBASE_TABLE_NAME));
+        ResultScanner rs = table.getScanner(scan);
+        for (Result result : rs) {
+            for (Cell cell : result.listCells()) {
+
+                System.out.println(Bytes.toString(cell.getRowArray()) + "    " + "column=" + Bytes.toString(cell.getFamilyArray())
+                        + ":" + Bytes.toString(cell.getQualifierArray())  + " , value="
+                        + Bytes.toString(cell.getValueArray()));
+            }
+            System.out.println("");
+        }
+        rs.close();
+    }
+
+
 
     @Test
     public void testHbaseGetRow() {
+
         Result result = hbaseClient.getRow(HBASE_TABLE_NAME, "1");
         for (Cell cell : result.listCells()) {
             System.out.println("qualifier:" + Bytes.toString(CellUtil.cloneQualifier(cell)));
