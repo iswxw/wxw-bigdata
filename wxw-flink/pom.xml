@@ -23,6 +23,7 @@
         <module>wxw-flink-elasticsearch</module>
         <module>wxw-flink-java</module>
         <module>wxw-flink-kafka</module>
+        <module>wxw-flink-job</module>
     </modules>
 
     <properties>
