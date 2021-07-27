@@ -21,11 +21,14 @@ public class DorisServiceTest extends DorisTest {
     @Test
     public void test_saveOrUpdate() {
         // 查询数据
-        User user1 = userService.getById(1);
+//        User user1 = userService.getById(1);
+        User user1 = new User();
+        user1.setUserId(1L);
+        user1.setUserName("IN-北京");
         log.info("user1 = {}",user1);
 
         // 修改数据
-        user1.setCity("天津");
+        user1.setCity("河南");
 
         // 通过 unique 更新数据
         boolean b = userService.save(user1);

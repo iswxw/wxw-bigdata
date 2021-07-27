@@ -28,7 +28,6 @@ public class DaoDorisTest extends DorisTest {
     @Test
     public void test_save() {
         User user = new User();
-        user.setUserId(1L);
         user.setUserName("IN-北京");
         user.setAge((short) 16);
         user.setSex(true); // true == 1
