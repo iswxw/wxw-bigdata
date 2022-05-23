@@ -80,6 +80,7 @@
     <orderEntry type="library" name="Maven: com.github.luben:zstd-jni:1.4.4-7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-connector-base:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.19" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.76" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.3.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.3.3.RELEASE" level="project" />

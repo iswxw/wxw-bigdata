@@ -15,6 +15,7 @@
         <module>wxw-doris</module>
         <module>wxw-spark</module>
         <module>wxw-hive</module>
+        <module>wxw-scala</module>
     </modules>
 
     <properties>
