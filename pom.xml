@@ -13,6 +13,8 @@
         <module>wxw-clickhouse</module>
         <module>wxw-flink</module>
         <module>wxw-doris</module>
+        <module>wxw-spark</module>
+        <module>wxw-hive</module>
     </modules>
 
     <properties>
