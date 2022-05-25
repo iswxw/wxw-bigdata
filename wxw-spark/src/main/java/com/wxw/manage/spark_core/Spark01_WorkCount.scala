@@ -1,16 +1,16 @@
-package com.wxw.test
+package com.wxw.manage.spark_core
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
+
 
 /**
  * @contract: 公众号：技术能量站
  * @desc:
  * @link:
  */
-object Spark01_WordCount {
+object Spark01_WorkCount {
   def main(args: Array[String]): Unit = {
-
     // todo 创建 Spark 运行配置对象
     val sparkConf = new SparkConf().setMaster("local[*]").setAppName("WordCount")
     // 创建 Spark 上下文环境对象（连接对象）
