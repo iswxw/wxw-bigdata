@@ -2,4 +2,5 @@
 
 
 案例分析
-  1. demo01 模拟单机分布式计算
+  1. demo01 模拟单节点（client->task->server）分布式计算
+  2. demo02 模拟双节点（client->2个task->2个server执行节点）分布式计算
