@@ -18,7 +18,7 @@ object Spark01_WorkCount {
 
     // todo 业务操
     // 读取文件数据
-    val fileRDD: RDD[String] = sc.textFile("wxw-scala/input/word.txt")
+    val fileRDD: RDD[String] = sc.textFile("wxw-spark/input/word.txt")
     // 将文件中的数据进行分词
     val wordRDD: RDD[String] = fileRDD.flatMap(_.split(" "))
     // 转换数据结构 word => (word, 1)
