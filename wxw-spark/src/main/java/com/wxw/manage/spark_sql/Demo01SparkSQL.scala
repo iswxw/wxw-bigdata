@@ -17,6 +17,9 @@ object Demo01SparkSQL {
 
     //创建 SparkSession 对象
     val spark: SparkSession = SparkSession.builder().config(conf).getOrCreate()
+    // 值的计算，支持$符号的使用
+    import spark.implicits._
+
 
     //RDD=>DataFrame=>DataSet 转换需要引入隐式转换规则，否则无法转换
     //spark 不是包名，是上下文环境对象名
@@ -26,6 +29,19 @@ object Demo01SparkSQL {
 
     val df: DataFrame = spark.read.json("wxw-spark/input/user.json")
     df.show()
+
+    // DataFrame => SQL
+    df.createOrReplaceTempView("user")
+    spark.sql("select * from user").show
+
+    // DataFrame => DSL
+    df.select("age","username").show
+    // import spark.implicits._
+    df.select( $"age" + 1).show
+
+
+    // DataSet
+
 
     // RDD <=> DataFrame
     // DataFrame <=> DataSet
