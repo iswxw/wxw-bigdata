@@ -9,6 +9,14 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
  * @link:
  */
 object Demo01_StreamWordCount {
+
+  /**
+   * netcat 使用 来模拟实时数据流
+   *  - win10: nc -l -p 9999
+   *  - linux: nc -lk 9999
+   * @param args
+   */
+
   def main(args: Array[String]): Unit = {
 
     // 初始化spark 配置信息
@@ -18,7 +26,7 @@ object Demo01_StreamWordCount {
     val ssc = new StreamingContext(sparkConf, Seconds(3))
 
     // 通过监控端口创建 DStream，读进来的数据为一行行
-    val lineStreams = ssc.socketTextStream("linux1", 9999)
+    val lineStreams = ssc.socketTextStream("localhost", 9999)
 
     // 将每一行数据做切分，形成一个个单词
     val wordStreams = lineStreams.flatMap(_.split(" "))
@@ -34,6 +42,7 @@ object Demo01_StreamWordCount {
 
     //启动 SparkStreamingContext
     ssc.start()
+
     ssc.awaitTermination()
 
   }
